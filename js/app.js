@@ -15,6 +15,7 @@ function loadEventListeners(){
     courses.addEventListener('click', buyCourse);
     shoppingCartContent.addEventListener('click', removeCart);
     clearCartBtn.addEventListener('click', clearCart);
+   
 }
 
 
@@ -67,7 +68,36 @@ function addIntoCart(course){
     `;
 
     shoppingCartContent.appendChild(row);
+
+    saveIntoStorage(course);
+
 }
+
+function saveIntoStorage(course){
+    let courses = getCoursesFromStorage();
+
+    courses.push(course);
+
+    localStorage.setItem('courses', JSON.stringify(courses));
+
+}
+
+function getCoursesFromStorage(){
+    let courses;
+
+    if(localStorage.getItem('courses') === null){
+        courses = [];
+    }else{
+        courses = JSON.parse(localStorage.getItem('courses') );
+        
+    }
+    return courses;
+
+}
+
+
+
+
 
 
 
@@ -107,14 +137,28 @@ onLoadCartNumbers();
 
 
 function removeCart(e){
+    let productNumbers = localStorage.getItem('cartNumbers');
+    productNumbers = parseInt(productNumbers);
+
     if(e.target.classList.contains('remove')){
         e.target.parentElement.parentElement.remove();
+
+        if(localStorage !=null){
+            localStorage.setItem('cartNumbers', productNumbers = 0);
+            document.querySelector('.submenu span').textContent = productNumbers++;
+            
+        }
+      
     }
+
 }
 
 
 function clearCart(){
     while(shoppingCartContent.firstChild){
         shoppingCartContent.removeChild(shoppingCartContent.firstChild);
+        document.querySelector('.submenu span').textContent = 0;
+        localStorage.clear();
     }
 }
+
