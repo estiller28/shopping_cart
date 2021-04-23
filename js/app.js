@@ -1,7 +1,8 @@
 //variables
 
 const courses = document.querySelector('#courses-list'),
-    shoppingCartContent = document.querySelector('#cart-content tbody');
+    shoppingCartContent = document.querySelector('#cart-content tbody'),
+    clearCartBtn = document.querySelector('#clear-cart');
 
 
 
@@ -12,9 +13,8 @@ loadEventListeners();
 
 function loadEventListeners(){
     courses.addEventListener('click', buyCourse);
-
-    
-
+    shoppingCartContent.addEventListener('click', removeCart);
+    clearCartBtn.addEventListener('click', clearCart);
 }
 
 
@@ -50,7 +50,10 @@ function getCourseInfo(course){
 function addIntoCart(course){
     const row = document.createElement('tr');
 
+    alert("added to cart √");
+
     row.innerHTML = `
+
        <tr>
             <td>
                 <img src="${course.image}" width = 100px>
@@ -62,6 +65,56 @@ function addIntoCart(course){
             </td>
        </tr> 
     `;
-    
+
     shoppingCartContent.appendChild(row);
+}
+
+
+
+
+
+
+let carts = document.querySelectorAll('.add-to-cart');
+
+for(let i = 0; i < carts.length; i++){
+    carts[i].addEventListener('click', () =>{
+        cartNumbers();
+    })
+}
+
+function onLoadCartNumbers(){
+    let productNumbers = localStorage.getItem('cartNumbers');
+    if(productNumbers){
+        document.querySelector('.submenu span').textContent = productNumbers;
+    }
+}
+
+
+function cartNumbers(){
+    let productNumbers = localStorage.getItem('cartNumbers');
+    productNumbers = parseInt(productNumbers);
+
+    if(productNumbers){
+        localStorage.setItem('cartNumbers', productNumbers + 1);
+        document.querySelector('.submenu span').textContent = productNumbers + 1;
+    }else{
+        localStorage.setItem('cartNumbers', 1);
+        document.querySelector('.submenu span').textContent = 1;
+    }
+    
+}
+onLoadCartNumbers();
+
+
+function removeCart(e){
+    if(e.target.classList.contains('remove')){
+        e.target.parentElement.parentElement.remove();
+    }
+}
+
+
+function clearCart(){
+    while(shoppingCartContent.firstChild){
+        shoppingCartContent.removeChild(shoppingCartContent.firstChild);
+    }
 }
